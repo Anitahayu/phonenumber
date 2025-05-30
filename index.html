@@ -1,0 +1,97 @@
+hello<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Number Storage App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            text-align: center;
+        }
+        input, button {
+            padding: 10px;
+            margin: 5px;
+            font-size: 16px;
+        }
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+        li {
+            padding: 10px;
+            background: #f4f4f4;
+            margin: 5px 0;
+            display: flex;
+            justify-content: space-between;
+        }
+        .delete-btn {
+            background: #ff4444;
+            color: green;
+           
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>Number Storage App</h1>
+    <input type="number" id="numberInput" placeholder="Enter a number">
+    <button onclick="addNumber()">Add Number</button>
+    <button onclick="clearNumbers()">Clear All</button>
+    <h2>Stored Numbers:</h2>
+    <ul id="numberList"></ul>
+
+    <script>
+        // Load numbers from localStorage when the page loads
+        document.addEventListener('DOMContentLoaded', displayNumbers);
+
+        function addNumber() {
+            const numberInput = document.getElementById('numberInput');
+            const number = numberInput.value.trim();
+
+            if (number === '' || isNaN(number)) {
+                alert('Please enter a valid number');
+                return;
+            }
+
+            // Get existing numbers from localStorage
+            let numbers = JSON.parse(localStorage.getItem('numbers')) || [];
+            numbers.push(number);
+            localStorage.setItem('numbers', JSON.stringify(numbers));
+
+            numberInput.value = ''; // Clear input
+            displayNumbers(); // Update display
+        }
+
+        function displayNumbers() {
+            const numberList = document.getElementById('numberList');
+            numberList.innerHTML = ''; // Clear current list
+
+            let numbers = JSON.parse(localStorage.getItem('numbers')) || [];
+
+            numbers.forEach((number, index) => {
+                const li = document.createElement('li');
+                li.innerHTML = `${number} <button class="delete-btn" onclick="deleteNumber(${index})">Delete</button>`;
+                numberList.appendChild(li);
+            });
+        }
+
+        function deleteNumber(index) {
+            let numbers = JSON.parse(localStorage.getItem('numbers')) || [];
+            numbers.splice(index, 1); // Remove number at index
+            localStorage.setItem('numbers', JSON.stringify(numbers));
+            displayNumbers(); // Update display
+        }
+
+        function clearNumbers() {
+            localStorage.removeItem('numbers');
+            displayNumbers(); // Update display
+        }
+    </script>
+</body>
+</html>
